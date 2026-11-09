@@ -1,58 +1,83 @@
 <#if entry?? && entry?has_content>
 <#assign optThemeParisFr=.get_optional_template('/skin/theme_parisfr_commons.html')>
 <#if optThemeParisFr.exists>
-<@cContainer class='mt-sm-5 pt-sm-5'>
-	<@cRow class='mt-sm-5 pt-sm-5'>
-		<@cCol class='mt-5'>
-			<@cTitle id='tos-main-title' class='py-3 main-info-color'>#i18n{termofservice.xpage.entry.pageTitle}</@cTitle>
-			<@cSection class='py-3 overflow-auto' params='style="height:65vh;"'>${entry.text!''}</@cSection>
+<div class="container mt-sm-5 pt-sm-5">
+	<div class="row mt-sm-5 pt-sm-5">
+		<div class="col mt-5">
+			<h1 id="tos-main-title" class="py-3 main-info-color">#i18n{termofservice.xpage.entry.pageTitle}</h1>
+			<section class="py-3 overflow-auto" style="height:65vh;">${entry.text!''}</section>
 			<#if !mode?? || mode != 'see'>
-				<@cForm action='jsp/site/Portal.jsp' >
-					<@messages errors=errors />
-					<@cInput type='hidden' id='id' name='id' value='${entry.id}' />
-					<#if back_url??> <input type="hidden" name="back_url" value="${back_url!}"></#if>
-					<@cInput type='hidden' value='${token!}' name='token' />
-					<@cInput type='hidden' name='page' value='entry' />
-					<@cFormRow class='mb-3'>
-						<@cCheckbox name='accepted' label='#i18n{termofservice.xpage.entry.labelAccepted}' required=true id='accepted' value='1' />
-					</@cFormRow>
-					<@cFormRow class='mb-5'>
-						<@cCol>
-						    <@cBtn label='Continuer' class='primary' params='name="action_modifyEntry"' />
-						</@cCol>
-					</@cFormRow>
-				</@cForm>
-			</#if>
-		</@cCol>
-	</@cRow>
-</@cContainer>
-<#else>
-<@box>
-	<@boxHeader title='#i18n{termofservice.xpage.entry.pageTitle}' id='tos-main-title' />
-	<@boxBody>
-		<@tform class='form-horizontal' action='jsp/site/Portal.jsp' >
-			<@messages errors=errors />
-			<@input type="hidden" id="id" name="id" value="${entry.id!}"/>
-			<@input type="hidden" value="${token!}" name="token" />
-			<@input type="hidden" name="page" value="entry" /> 
-			<#if back_url??> <input type="hidden" name="back_url" value="${back_url!}"></#if>
-			<@formGroup labelFor='text' labelKey='#i18n{termofservice.xpage.entry.pageTitle}' mandatory=true>
-				${entry.text!''}
-			</@formGroup>
-			<#if !mode?? || mode != 'see'>
-				<@formGroup>
-					<@cCheckbox name='accepted' label='#i18n{termofservice.modify_entry.labelAccepted}' required=true id='accepted' value='1' />
-				</@formGroup>
-				<@formGroup>
-					<@button name='action_modifyEntry' type='submit' tabIndex='2' title='#i18n{termofservice.xpage.entry.labelAccepted}' buttonIcon='plus' />
-					<#if logout_url?has_content>
-						<@aButton id='cancel-tos-button' href='${logout_url}' title='#i18n{portal.util.labelCancel}' buttonIcon='close' color='btn-secondary' />
+				<form action="jsp/site/Portal.jsp" method="post">
+					<#if errors?? && errors?has_content>
+					<div class="alert alert-danger" role="alert">
+						<ul class="mb-0">
+							<#list errors as error><li>${error.message}</li></#list>
+						</ul>
+					</div>
 					</#if>
-				</@formGroup>
+					<input type="hidden" id="id" name="id" value="${entry.id}">
+					<#if back_url??> <input type="hidden" name="back_url" value="${back_url!}"></#if>
+					<input type="hidden" name="token" value="${token!}">
+					<input type="hidden" name="page" value="entry">
+					<div class="row mb-3">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="accepted" name="accepted" value="1" required>
+							<label class="form-check-label" for="accepted">#i18n{termofservice.xpage.entry.labelAccepted} <span class="text-danger">*</span></label>
+						</div>
+					</div>
+					<div class="row mb-5">
+						<div class="col">
+							<button type="submit" class="btn btn-primary" name="action_modifyEntry">Continuer</button>
+						</div>
+					</div>
+				</form>
 			</#if>
-		</@tform>
-	</@boxBody>
-</@box>
+		</div>
+	</div>
+</div>
+<#else>
+<div class="card">
+	<div class="card-header">
+		<h3 id="tos-main-title" class="card-title">#i18n{termofservice.xpage.entry.pageTitle}</h3>
+	</div>
+	<div class="card-body">
+		<form class="form-horizontal" action="jsp/site/Portal.jsp" method="post">
+			<#if errors?? && errors?has_content>
+			<div class="alert alert-danger" role="alert">
+				<ul class="mb-0">
+					<#list errors as error><li>${error.message}</li></#list>
+				</ul>
+			</div>
+			</#if>
+			<input type="hidden" id="id" name="id" value="${entry.id!}">
+			<input type="hidden" name="token" value="${token!}">
+			<input type="hidden" name="page" value="entry">
+			<#if back_url??> <input type="hidden" name="back_url" value="${back_url!}"></#if>
+			<div class="mb-3">
+				<label class="form-label">#i18n{termofservice.xpage.entry.pageTitle} <span class="text-danger">*</span></label>
+				<div>${entry.text!''}</div>
+			</div>
+			<#if !mode?? || mode != 'see'>
+				<div class="mb-3">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="accepted" name="accepted" value="1" required>
+						<label class="form-check-label" for="accepted">#i18n{termofservice.modify_entry.labelAccepted} <span class="text-danger">*</span></label>
+					</div>
+				</div>
+				<div class="mb-3">
+					<button type="submit" class="btn btn-primary" name="action_modifyEntry" tabindex="2" title="#i18n{termofservice.xpage.entry.labelAccepted}">
+						<i class="ti ti-plus" aria-hidden="true"></i> #i18n{termofservice.xpage.entry.labelAccepted}
+					</button>
+					<#if logout_url?has_content>
+						<a id="cancel-tos-button" class="btn btn-secondary" href="${logout_url}" title="#i18n{portal.util.labelCancel}">
+							<i class="ti ti-x" aria-hidden="true"></i> #i18n{portal.util.labelCancel}
+						</a>
+					</#if>
+				</div>
+			</#if>
+		</form>
+	</div>
+</div>
 </#if>
 </#if>
 <script>
